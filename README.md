@@ -1,8 +1,8 @@
 # pod_BS_comm
 #Files
-clientToNode.c :file has code which sends a data packet from client to node server
+clientSendToNode.c :file has code which sends a data packet from client to node server
 		func used is send
-clienFrmNode.c :file has code which receives data from node server and display it.
+clienRecFrmNode.c :file has code which receives data from node server and display it.
                  function used  is recv
 
   the c code needs to be run after the node server is setup
