@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>  </head>
+  <body>
+    <script>
+      var socket = io.connect();
+      /*socket.on('now_playing', function(data){
+        $('#now_playing').text(data.now_playing);
+      });*/
+
+     /* socket.on('available_songs', function(data){
+        $('#available_songs').text(data.available_songs);
+      });*/
+
+      socket.on('data_send', function(data){
+        $('#data_pod').text(data.data_from_pod);
+      });
+    </script>
+    <body>Data from Pod</body>
+    <div id="data_pod"> </div>
+
+
+
+</body>
+<body>
+    <form action="" method="post" enctype="multipart/form-data">
+         <fieldset>
+            <label for="Ping">Ping:</label>
+            <input type="text" id="ping" name="ping1" placeholder="Enter Text" />
+            <br />
+            
+            <input type="submit" value="Submit List" />
+         </fieldset>
+      </form>
+
+  </body>
+</html>
