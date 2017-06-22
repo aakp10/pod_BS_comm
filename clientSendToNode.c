@@ -64,7 +64,7 @@ void sCComm(int fd)
              *((uint8_t*)buffer)=team_id;
      	
      	*(uint8_t*)(buffer+1)=status;
-     	printf("%x",buffer[0]);
+     	//printf("%x",buffer[0]);
      	
      	*((int32_t*)(buffer+2))=acceleration;
      	*((int32_t*)(buffer+6))=position;
@@ -95,7 +95,7 @@ int createTCPSocket()
 	struct sockaddr_in addr;
 	
 	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr =inet_addr("192.168.1.153");
+	addr.sin_addr.s_addr =inet_addr("127.0.0.1");
 	addr.sin_port = htons(PORT);
 	if(connect(fd,(struct sockaddr*) &addr,sizeof(addr))>=0)
 		printf("Client side connection estd.\n");
