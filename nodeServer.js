@@ -2,13 +2,14 @@ var net= require('net');
 var fs=require('fs');
 var formidable = require("formidable");
 var io = require('socket.io');
+
 //var io = require('socket.io');
 
 
 
 // Backend Core Functionality
 var team_id;
-var  status;
+var  stat;
 var acceleration;
 var position;
 var velocity;
@@ -24,7 +25,7 @@ var input_base = "NULL";
 
 var dataJSON=new Object();
 dataJSON={ "team_id":'0',
-            "status":'0',
+            "stat":'0',
             "acceleration":'0',
             "position":'0',
             "velocity":'0',
@@ -50,23 +51,23 @@ function unpack8(arr)
 
         var server=net.createServer(function (socket) {
                // socket.setEncoding('utf8');
-                	socket.on('error',function (){
-                		console.log("error occured");
-                	});
-                	socket.on('end',function (){
-                		console.log("ended");
-                	});
+                    socket.on('error',function (){
+                        console.log("error occured");
+                    });
+                    socket.on('end',function (){
+                        console.log("ended");
+                    });
 
 
-                	socket.on('data',function (data){
+                    socket.on('data',function (data){
 
-        				
-                		
-                		//console.dir(data);
-                		var arr = Array.prototype.slice.call(data, 0,1);
-                		 dataJSON.team_id=unpack8(arr);
+                        
+                        
+                        //console.dir(data);
+                        var arr = Array.prototype.slice.call(data, 0,1);
+                         dataJSON.team_id=unpack8(arr);
                         arr = Array.prototype.slice.call(data, 1,2);
-                         dataJSON.status=unpack8(arr);
+                         dataJSON.stat=unpack8(arr);
                          arr = Array.prototype.slice.call(data, 2,6);
                         dataJSON.acceleration=unpack(arr);
                          arr = Array.prototype.slice.call(data, 6,10);
@@ -87,11 +88,11 @@ function unpack8(arr)
                         no_data_packet = no_data_packet +1;
                         //console.log(no_data_packet)
                         console.log("Data Packet No."+ no_data_packet)
-                        console.log(dataJSON); 	
+                        console.log(dataJSON);  
 
                         socket.write(input_base);
                      //   app.get('/data.html', browserdisp );
-	                     });
+                         });
 
         });
 /*var data_to_pod = {"Test1":"1","Test2":"2"};
@@ -109,8 +110,8 @@ listener.sockets.on('connection',function(socket_to_pod){
    
 
 server.listen(3000,function (){
-	var address=server.address().port;
-	console.log("server is listening at "+address);
+    var address=server.address().port;
+    console.log("server is listening at "+address);
   //192.168.0.144
 });
 
@@ -118,20 +119,19 @@ server.listen(3000,function (){
 
 //Frontend - Webapp
 
-/*function browserdisp(req,resp){
-                        resp.send(JSON.stringify(dataJSON));
-                       // if(req){var start=1;}
-                      
-                      }*/
+
 
 var http = require("http");
 var express=require('express');
+
+
+
 var app=express();
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: true}));
 
-var server1 = http.createServer(app);
-     //app.listen(2000,()=>{console.log("2000 server")});
-
-//app.get('/data.html', browserdisp );
+app.use(bodyParser.json());
+var server1=http.createServer(app);
 
 app.get('/', function (req,res){
 
@@ -150,33 +150,21 @@ app.get('/index.html',function(req,res){
 
 });
 
+
+
+
+
 app.post('/index.html',function(request,response){
 
-                    console.log("Got Post!!");
-                    var form = new formidable.IncomingForm();
+                    //console.log("Got Post!!");
+                    console.log('COMMAND: ' + request.body.name);
+});
                     
-
-                    form.parse(request,function(err,field){
-
-                        // change input_newsong to LIST
-                        input = field;
-                        console.log(input.ping1);
-                        input_base = input.ping1;
-                        
-
-
-
-                    fs.readFile(__dirname + "/index.html",function(error,data){               
-                    response.writeHead(200, {"Content-Type": "text/html"});
-                    response.write(data, "utf8");
-                    response.end();
-                    });
-
                      
                     
-                    })
+                    
 
-                });
+                
 
 
 var listener = io.listen(server1);
@@ -190,11 +178,11 @@ listener.sockets.on('connection', function(socket){
    
 
     setInterval(function(){
-        socket.emit('data_send', {'data_from_pod': dataJSON["team_id"]});
+        socket.emit('data_send', dataJSON);
     }, 0);
 
 });
 
 
 server1.listen(8081,"0.0.0.0");
-console.log("Server listening at 8081")
+console.log("Server listening at 8081");
