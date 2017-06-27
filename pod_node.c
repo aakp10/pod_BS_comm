@@ -14,6 +14,8 @@
 
 
 #define PORT 3000
+
+
 uint8_t team_id;
 uint8_t status;
 int32_t acceleration;
@@ -29,7 +31,9 @@ char buffer[34];
 char a[50];
 int no_recv_data_packets = 0;
 
-void sCComm(int fd)
+// Task 1: Modify this function to recieve data from the CAN bus.OR write a new one.
+
+void sCComm(int fd) 
 {   
          do {
            printf("Client: ");
@@ -95,6 +99,8 @@ void sCComm(int fd)
 
 }
 
+
+// Task 2:Modify this Function to send data received from the CAN bus to the socket created, format the data if required,etc 
 void sendPacket_pod(int fd){
        
         //while(true) { 
@@ -139,17 +145,30 @@ void sendPacket_pod(int fd){
 }
 
 
+// Task 3: Receive Data from the node.js server and send data to the CAN bus.
 void recvPacket_pod(int fd){
 
-        
-    
-        recv(fd, a,sizeof(a),0);
-        printf("%s\n",a);
-        printf("%d\n",(++no_recv_data_packets));
+    //printf("#\n");
 
+    recv(fd, a,sizeof(a),0);
+    //printf("%s\n",a);
+
+    if(a[0] == 'y' || a[0] == 'Y'){
+         int start = 1;
+         int len = 49;
+
+        printf("%.*s\n", len, a + start);
+        //printf("%s\n",a);
+        printf("%d\n",(++no_recv_data_packets));
+    }
+    a==" ";
+
+    //a = " ";
 }
 
-int createTCPSocket()
+
+
+/*int createTCPSocket()
 {    //creating a server side socket 
     int fd=socket(AF_INET,SOCK_STREAM,0);
     //int fd=socket(AF_INET,SOCK_DGRAM,0);
@@ -160,12 +179,14 @@ int createTCPSocket()
     addr.sin_addr.s_addr =inet_addr("127.0.0.1");
     addr.sin_port = htons(PORT);
     if(connect(fd,(struct sockaddr*) &addr,sizeof(addr))>=0)
-        printf("Client side connection estd.\n");*/
+        printf("Client side connection estd.\n");
 
     printf("%d",fd); 
     return fd;
 
-}
+}*/
+
+
 
 
 
@@ -220,14 +241,18 @@ int main()
         }*/
         if(cn_d>=0){
             printf("Client side connection estd!!!!!!!!!.\n");
-            while(1){
+
+            while(true){
 
             sendPacket_pod(client);
+            //printf("#\n");
             recvPacket_pod(client);
             
             }
         }
+
     }
+
     //close(client);
     printf("connection terminated\n");
     return 0;
